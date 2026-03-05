@@ -10,6 +10,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploaded_resumes"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+# Load model and vectorizer
 model = joblib.load("artifacts/model.pkl")
 vectorizer = joblib.load("artifacts/vectorizer.pkl")
 
@@ -48,7 +49,15 @@ def home():
         else:
             result = "Rejected ❌"
 
-        skills_list = ["python", "machine learning","C++", "java", "sql", "ai", "deep learning"]
+        skills_list = [
+            "python",
+            "machine learning",
+            "c++",
+            "java",
+            "sql",
+            "ai",
+            "deep learning"
+        ]
 
         for skill in skills_list:
             if skill in resume_clean:
@@ -62,12 +71,15 @@ def home():
         else:
             suggestion = "Your resume matches well with the job role."
 
-    return render_template("index.html",
-                           score=score,
-                           result=result,
-                           matched_skills=matched_skills,
-                           suggestion=suggestion)
+    return render_template(
+        "index.html",
+        score=score,
+        result=result,
+        matched_skills=matched_skills,
+        suggestion=suggestion
+    )
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
